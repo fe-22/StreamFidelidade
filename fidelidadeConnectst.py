@@ -3,9 +3,17 @@ import pandas as pd
 from io import BytesIO
 from datetime import date, datetime
 import sqlite3
+import os
+import openpyxl
 
+st.write(f"Versão do openpyxl: {openpyxl.__version__}")
 
-
+# Verificar se a imagem existe e exibi-la
+image_path = "logo_church.png"
+if os.path.exists(image_path):
+    st.image(image_path, width=100)  # ajuste o tamanho da imagem
+else:
+    st.error(f"Img '{image_path}' não encontrada.")
 
 # Adaptadores de data para SQLite
 def adapt_date(isodate):
@@ -75,7 +83,6 @@ st.markdown(
         width: 100px;
         margin-bottom: 50px;
     }
-    }
     .footer {
         position: fixed;
         left: 0;
@@ -89,12 +96,24 @@ st.markdown(
     h1, h2, h3 {
         color: #FFFFFF;  /* Clarear títulos */
     }
+        .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 5px;  /* Diminuir o padding para ajustar a altura */
+        font-size: 12px;  /* Diminuir o tamanho da fonte */
+    }
+    h1, h2, h3 {
+        color: #FFFFFF;  /* Clarear títulos */
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
-
-
 
 # Título da aplicação
 st.title("ADFIDELIDADE")
@@ -222,7 +241,7 @@ if busca:
     for resultado in resultados:
         st.write(resultado)
 
-# Rodapé com o endereço da igreja
+# Rodapé com o endereço da igreja e link para o GitHub
 st.markdown(
     """
     <footer class="footer">
@@ -230,6 +249,7 @@ st.markdown(
         <p>"Nós do ministério Fidelidade sob a proteção de Deus, estamos compromissados na divulgação do evangelho de Jesus Cristo e com a defesa da família".</p>
         <pre>Rua Ernesta Pelosine, 196 - Centro de São Bernardo do Campo - SP</pre>
         <pre>Cep:09771-220 - Tel:(11)2758-2589 - 9.5269-3719</pre>
+        
     </footer>
     """,
     unsafe_allow_html=True
@@ -237,3 +257,7 @@ st.markdown(
 
 # Fechar a conexão com o banco de dados
 conn.close()
+
+
+
+
