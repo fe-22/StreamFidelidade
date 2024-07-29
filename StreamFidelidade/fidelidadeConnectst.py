@@ -5,12 +5,7 @@ from datetime import date, datetime
 import sqlite3
 import os
 
-# Verificar se a imagem existe e exibi-la
-image_path = "logo_church.png"
-if os.path.exists(image_path):
-    st.image(image_path, width=100)  # ajuste o tamanho da imagem
-else:
-    st.error(f"Imagem '{image_path}' não encontrada.")
+
 
 # Adaptadores de data para SQLite
 def adapt_date(isodate):
