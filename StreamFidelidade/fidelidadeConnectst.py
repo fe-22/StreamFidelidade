@@ -3,6 +3,14 @@ import pandas as pd
 from io import BytesIO
 from datetime import date, datetime
 import sqlite3
+import os
+
+# Verificar se a imagem existe e exibi-la
+image_path = "logo_church.png"
+if os.path.exists(image_path):
+    st.image(image_path, width=100)  # ajuste o tamanho da imagem
+else:
+    st.error(f"Imagem '{image_path}' não encontrada.")
 
 # Adaptadores de data para SQLite
 def adapt_date(isodate):
@@ -17,6 +25,23 @@ sqlite3.register_converter("DATE", convert_date)
 # Conexão com o banco de dados
 conn = sqlite3.connect('dados.db', detect_types=sqlite3.PARSE_DECLTYPES)
 cursor = conn.cursor()
+
+# Criação da tabela se não existir
+cursor.execute('''
+  CREATE TABLE IF NOT EXISTS membros (
+    id INTEGER PRIMARY KEY,
+    nome TEXT,
+    data_nascimento DATE,
+    estado_civil TEXT,
+    conjugue TEXT,
+    filhos TEXT,
+    consagrado TEXT,
+    local_consagracao TEXT,
+    data_consagracao DATE,
+    cargo TEXT
+  );
+''')
+conn.commit()
 
 # Verifica e adiciona colunas, se não existirem
 cursor.execute("PRAGMA table_info(membros);")
@@ -36,8 +61,7 @@ novas_colunas = [
 for coluna, tipo in novas_colunas:
     if coluna not in colunas:
         cursor.execute(f"ALTER TABLE membros ADD COLUMN {coluna} {tipo};")
-
-conn.commit()
+        conn.commit()
 
 # Adicionar CSS para mudar a cor de fundo e clarear os títulos
 st.markdown(
@@ -69,16 +93,27 @@ st.markdown(
     h1, h2, h3 {
         color: #FFFFFF;  /* Clarear títulos */
     }
+        .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 5px;  /* Diminuir o padding para ajustar a altura */
+        font-size: 12px;  /* Diminuir o tamanho da fonte */
+    }
+    h1, h2, h3 {
+        color: #FFFFFF;  /* Clarear títulos */
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Adicionar uma imagem com tamanho ajustado
-st.markdown('<img src="img/logo_church.png" class="logo">', unsafe_allow_html=True)
-
 # Título da aplicação
-st.title("IGREJA EVANGÉLICA ASSEMBLEIA DE DEUS - MINISTÉRIO FIDELIDADE")
+st.title("ADFIDELIDADE")
 st.header("Pastor Presidente: Eudes Angelo")
 
 st.header("Cadastro de Membros")
@@ -203,7 +238,7 @@ if busca:
     for resultado in resultados:
         st.write(resultado)
 
-# Rodapé com o endereço da igreja
+# Rodapé com o endereço da igreja e link para o GitHub
 st.markdown(
     """
     <footer class="footer">
@@ -211,6 +246,7 @@ st.markdown(
         <p>"Nós do ministério Fidelidade sob a proteção de Deus, estamos compromissados na divulgação do evangelho de Jesus Cristo e com a defesa da família".</p>
         <pre>Rua Ernesta Pelosine, 196 - Centro de São Bernardo do Campo - SP</pre>
         <pre>Cep:09771-220 - Tel:(11)2758-2589 - 9.5269-3719</pre>
+        
     </footer>
     """,
     unsafe_allow_html=True
