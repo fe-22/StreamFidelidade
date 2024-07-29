@@ -80,6 +80,7 @@ st.markdown(
         width: 100px;
         margin-bottom: 50px;
     }
+    }
     .footer {
         position: fixed;
         left: 0;
